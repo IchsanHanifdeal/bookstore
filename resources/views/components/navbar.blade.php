@@ -10,8 +10,8 @@
             <li><a href="#" class="font-medium">Cart (0)</a></li>
         </ul>
         <div class="flex gap-2">
-            <a href="#" class="btn btn-sm btn-outline">Login</a>
-            <a href="#" class="btn btn-sm btn-outline">Register</a>
+            <a href="{{ route('login') }}" class="btn btn-sm btn-outline">Login</a>
+            <a href="{{ route('register')}}" class="btn btn-sm btn-outline">Register</a>
         </div>
     </div>
 </nav>

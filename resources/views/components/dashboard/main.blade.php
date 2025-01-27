@@ -42,3 +42,5 @@
         });
     </script>
 </x-main>
+
+@include('components.dashboard.modals')

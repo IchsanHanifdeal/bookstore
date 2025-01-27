@@ -12,7 +12,9 @@ class BukuController extends Controller
      */
     public function index()
     {
-        //
+        return view('dashboard.buku', [
+            'buku' => Buku::all(),
+        ]);
     }
 
     /**

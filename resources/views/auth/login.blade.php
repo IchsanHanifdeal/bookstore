@@ -25,7 +25,7 @@
                 <form action="{{ route('authenticate') }}" class="sm:w-2/3 w-full px-4 lg:px-0 mx-auto" method="POST">
                     @csrf
                     <div class="pb-2 pt-4">
-                        <input type="email" name="email" id="email" required placeholder="Masukkan email..."
+                        <input type="text" name="username" id="username" required placeholder="Masukkan username..."
                             class="input block w-full p-4 text-lg bg-gray-700">
                         @error('email')
                             <span class="text-red-600 text-sm">{{ $message }}</span>

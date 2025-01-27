@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\transaksi;
+use App\Models\keranjang;
 use Illuminate\Http\Request;
 
-class TransaksiController extends Controller
+class KeranjangController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('dashboard.transaksi');
+        //
     }
 
     /**
@@ -34,7 +34,7 @@ class TransaksiController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(transaksi $transaksi)
+    public function show(keranjang $keranjang)
     {
         //
     }
@@ -42,7 +42,7 @@ class TransaksiController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(transaksi $transaksi)
+    public function edit(keranjang $keranjang)
     {
         //
     }
@@ -50,7 +50,7 @@ class TransaksiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, transaksi $transaksi)
+    public function update(Request $request, keranjang $keranjang)
     {
         //
     }
@@ -58,7 +58,7 @@ class TransaksiController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(transaksi $transaksi)
+    public function destroy(keranjang $keranjang)
     {
         //
     }

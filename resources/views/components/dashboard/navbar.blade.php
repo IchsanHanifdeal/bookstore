@@ -8,7 +8,7 @@
     <div class="flex-none hidden lg:block">
         <ul class="menu menu-horizontal">
             <img class="w-8 rounded-full border border-gray-400"
-                src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? '-') }}"
+                src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->username ?? '-') }}"
                 alt="">
         </ul>
     </div>

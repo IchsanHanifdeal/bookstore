@@ -11,18 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaksis', function (Blueprint $table) {
+        Schema::create('keranjangs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('customer');
             $table->unsignedBigInteger('buku');
-            $table->date('tanggal');
             $table->integer('jumlah');
             $table->integer('total');
+            $table->timestamps();
+
             $table->foreign('customer')->references('id')->on('customers')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('buku')->references('id')->on('bukus')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('bukti_transaksi')->nullable();
-            $table->enum('validasi', ['diterima', 'menunggu_validasi', 'ditolak'])->default('menunggu_validasi');
-            $table->timestamps();
         });
     }
 
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transaksis');
+        Schema::dropIfExists('keranjangs');
     }
 };

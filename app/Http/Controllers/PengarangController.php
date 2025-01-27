@@ -12,7 +12,10 @@ class PengarangController extends Controller
      */
     public function index()
     {
-        //
+        return view('dashboard.pengarang', [
+            'pengarang' => Pengarang::all(),
+            'pengarang_terbaru' => Pengarang::orderBy('created_at', 'desc')->first(),
+        ]);
     }
 
     /**

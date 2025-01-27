@@ -27,7 +27,7 @@
         </div>
     </div>
 
-    @if (!request()->is('dashboard*') && !request()->is('login') && !request()->is('register'))
+    @if (!str_contains(request()->path(), 'dashboard') && !request()->is('login') && !request()->is('register'))
         @include('components.navbar')
     @endif
 
@@ -92,7 +92,7 @@
                 splashScreen.classList.add('show');
             });
         </script>
-        @if (!request()->is('dashboard') && !request()->is('login') && !request()->is('register'))
+        @if (!str_contains(request()->path(), 'dashboard') && !request()->is('login') && !request()->is('register'))
             @include('components.footer')
         @endif
     </main>

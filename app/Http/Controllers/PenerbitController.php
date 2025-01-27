@@ -12,7 +12,10 @@ class PenerbitController extends Controller
      */
     public function index()
     {
-        //
+        return view('dashboard.penerbit', [
+            'penerbit' => Penerbit::all(),
+            'penerbit_terbaru' => Penerbit::orderBy('created_at', 'desc')->first(),
+        ]);
     }
 
     /**
