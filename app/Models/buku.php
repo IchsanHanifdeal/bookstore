@@ -9,7 +9,7 @@ class buku extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['judul_buku', 'pengarang', 'penerbit', 'kategori', 'stok', 'harga'. 'deskripsi', 'gambar'];
+    protected $fillable = ['judul_buku', 'pengarang', 'penerbit', 'kategori', 'stok', 'harga', 'deskripsi', 'gambar'];
 
     public function pengarangs()
     {
@@ -18,11 +18,11 @@ class buku extends Model
 
     public function penerbits()
     {
-        return $this->belongsTo(Penerbit::class, 'pengarang');
+        return $this->belongsTo(Penerbit::class, 'penerbit');
     }
 
     public function kategoris()
     {
-        return $this->belongsTo(Kategori::class, 'pengarang');
+        return $this->belongsTo(Kategori::class, 'kategori');
     }
 }

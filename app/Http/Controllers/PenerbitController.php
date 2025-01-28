@@ -31,7 +31,24 @@ class PenerbitController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'telp' => 'required|string|max:255',
+        ]);
+
+        Penerbit::create([
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'email' => $request->email,
+            'telp' => $request->telp,
+        ]);
+
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Penerbit berhasil ditambahkan.',
+        ]);
     }
 
     /**
@@ -53,16 +70,42 @@ class PenerbitController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, penerbit $penerbit)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'telp' => 'required|string|max:255',
+        ]);
+
+        $penerbit = penerbit::findOrFail($id);
+
+        $penerbit->update([
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'email' => $request->email,
+            'telp' => $request->telp,
+        ]);
+
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Kategori berhasil diperbarui.',
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(penerbit $penerbit)
+    public function destroy($id)
     {
-        //
+        $kategori = penerbit::findOrFail($id);
+
+        $kategori->delete();
+
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Penerbit berhasil dihapus.',
+        ]);
     }
 }

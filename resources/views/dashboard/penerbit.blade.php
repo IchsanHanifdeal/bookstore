@@ -112,7 +112,8 @@
                                                             Batal
                                                         </button>
                                                         <button type="submit"
-                                                            class="btn btn-primary bg-blue-600 hover:bg-blue-700 text-white border-0">
+                                                            class="btn btn-primary bg-blue-600 hover:bg-blue-700 text-white border-0"
+                                                            onclick="closeAllModals(event)">
                                                             Simpan Perubahan
                                                         </button>
                                                     </div>
@@ -158,7 +159,8 @@
                 class="btn bg-gray-200 text-gray-700 hover:bg-gray-300 border-0">
                 Batal
             </button>
-            <button type="submit" class="btn btn-primary bg-blue-600 hover:bg-blue-700 text-white border-0">
+            <button type="submit" class="btn btn-primary bg-blue-600 hover:bg-blue-700 text-white border-0"
+                onclick="closeAllModals(event)">
                 Simpan
             </button>
         </div>

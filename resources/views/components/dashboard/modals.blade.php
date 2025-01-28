@@ -7,7 +7,7 @@
         </h3>
         <div class="modal-body" id="general_body"></div>
         <div class="modal-action">
-            <button class="btn btn-error capitalize text-white" type="submit">
+            <button class="btn btn-error capitalize text-white" type="submit" onclick="closeAllModals(event)">
                 Yakin
             </button>
             <button type="button" onclick="document.getElementById('delete_modal_general').close()" class="btn">
@@ -34,8 +34,26 @@
     `;
 
         const form = document.querySelector('#delete_modal_general form');
-        form.action = `/${type}/${id}/hapus`;
+        form.action = `/dashboard/${type}/${id}/hapus`;
 
         document.getElementById('delete_modal_general').showModal();
+    }
+</script>
+
+<script>
+    function closeAllModals(event) {
+        const form = event.target.closest('form');
+
+        if (form) {
+            form.submit();
+
+            const modals = document.querySelectorAll('dialog.modal');
+
+            modals.forEach(modal => {
+                if (modal.hasAttribute('open')) {
+                    modal.close();
+                }
+            });
+        }
     }
 </script>

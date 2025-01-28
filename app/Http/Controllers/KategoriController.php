@@ -15,7 +15,7 @@ class KategoriController extends Controller
         return view('dashboard.kategori', [
             'kategori' => Kategori::all(),
             'kategori_terbaru' => Kategori::orderBy('created_at', 'desc')->first(),
-        ]);        
+        ]);
     }
 
     /**
@@ -31,7 +31,18 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+        ]);
+
+        Kategori::create([
+            'nama_kategori' => $request->nama,
+        ]);
+
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Kategori berhasil ditambahkan.',
+        ]);
     }
 
     /**
@@ -53,16 +64,36 @@ class KategoriController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, kategori $kategori)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+        ]);
+
+        $kategori = Kategori::findOrFail($id);
+
+        $kategori->update([
+            'nama_kategori' => $request->nama,
+        ]);
+
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Kategori berhasil diperbarui.',
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(kategori $kategori)
+    public function destroy($id)
     {
-        //
+        $kategori = Kategori::findOrFail($id);
+
+        $kategori->delete();
+
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Kategori berhasil dihapus.',
+        ]);
     }
 }

@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\buku;
+use App\Models\kategori;
+use App\Models\penerbit;
+use App\Models\pengarang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BukuController extends Controller
 {
@@ -13,7 +17,11 @@ class BukuController extends Controller
     public function index()
     {
         return view('dashboard.buku', [
-            'buku' => Buku::all(),
+            'buku' => Buku::orderBy('stok', 'asc')->get(),
+            'buku_terbaru' => Buku::orderBy('created_at', 'desc')->first(),
+            'pengarang' => Pengarang::all(),
+            'penerbit' => penerbit::all(),
+            'kategori' => kategori::all(),
         ]);
     }
 
@@ -30,8 +38,31 @@ class BukuController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'judul_buku' => 'required|string|max:255',
+            'pengarang' => 'required',
+            'penerbit' => 'required',
+            'kategori' => 'required',
+            'stok' => 'required|integer|min:0',
+            'harga' => 'required|integer|min:0',
+            'deskripsi' => 'nullable|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $data = $request->only(['judul_buku', 'pengarang', 'penerbit', 'kategori', 'stok', 'harga', 'deskripsi']);
+
+        if ($request->hasFile('gambar')) {
+            $data['gambar'] = $request->file('gambar')->store('buku', 'public');
+        }
+
+        Buku::create($data);
+
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Buku berhasil ditambahkan.',
+        ]);
     }
+
 
     /**
      * Display the specified resource.
@@ -52,16 +83,50 @@ class BukuController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, buku $buku)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'judul_buku' => 'required|string|max:255',
+            'pengarang' => 'required',
+            'penerbit' => 'required',
+            'kategori' => 'required',
+            'stok' => 'required|integer|min:0',
+            'harga' => 'required|integer|min:0',
+            'deskripsi' => 'nullable|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $buku = Buku::findOrFail($id);
+        $data = $request->only(['judul_buku', 'pengarang', 'penerbit', 'kategori', 'stok', 'harga', 'deskripsi']);
+
+        if ($request->hasFile('gambar')) {
+            if ($buku->gambar) {
+                Storage::disk('public')->delete($buku->gambar);
+            }
+            $data['gambar'] = $request->file('gambar')->store('buku', 'public');
+        }
+
+        $buku->update($data);
+
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Buku berhasil diperbarui.',
+        ]);
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(buku $buku)
+    public function destroy($id)
     {
-        //
+        $kategori = Buku::findOrFail($id);
+
+        $kategori->delete();
+
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Buku berhasil dihapus.',
+        ]);
     }
 }

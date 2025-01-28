@@ -31,7 +31,24 @@ class PengarangController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'telp' => 'required|string|max:255',
+        ]);
+
+        Pengarang::create([
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'email' => $request->email,
+            'telp' => $request->telp,
+        ]);
+
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Pengarang berhasil ditambahkan.',
+        ]);
     }
 
     /**
@@ -53,16 +70,42 @@ class PengarangController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, pengarang $pengarang)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'telp' => 'required|string|max:255',
+        ]);
+
+        $pengarang = Pengarang::findOrFail($id);
+
+        $pengarang->update([
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'email' => $request->email,
+            'telp' => $request->telp,
+        ]);
+
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Pengarang berhasil diperbarui.',
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(pengarang $pengarang)
+    public function destroy($id)
     {
-        //
+        $kategori = pengarang::findOrFail($id);
+
+        $kategori->delete();
+
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Pengarang berhasil dihapus.',
+        ]);
     }
 }
