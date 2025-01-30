@@ -22,7 +22,7 @@
                 <h1 class="my-6">
                     @include('components.brands', ['class' => '!text-3xl'])
                 </h1>
-                <form action="{{ route('authenticate') }}" class="sm:w-2/3 w-full px-4 lg:px-0 mx-auto" method="POST">
+                <form action="{{ route('auth.register') }}" class="sm:w-2/3 w-full px-4 lg:px-0 mx-auto" method="POST">
                     @csrf
                     <div class="pb-2 pt-4">
                         <input type="text" name="username" id="username" required placeholder="Masukkan username..."

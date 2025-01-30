@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -64,6 +68,11 @@ class AuthController extends Controller
                     'message' => 'Login berhasil!',
                     'type' => 'success'
                 ]);
+            } elseif ($userRole === 'customer') {
+                return redirect()->route('index')->with('toast', [
+                    'message' => 'Login berhasil!',
+                    'type' => 'success'
+                ]);
             }
 
             return back()->with('toast', [
@@ -83,17 +92,65 @@ class AuthController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function logout(Request $request)
     {
-        //
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('index')->with('toast', [
+            'message' => 'Logout berhasil!',
+            'type' => 'success'
+        ]);;
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'jenis_kelamin' => 'required|string|in:laki-laki,perempuan',
+            'alamat' => 'required|string|max:255',
+            'email' => 'required|email|unique:customers,email',
+            'telepon' => 'required|string|max:20',
+            'username' => 'required|string|unique:users,username',
+            'password' => 'required|string|min:6',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $user = User::create([
+                'username' => $request->username,
+                'password' => Hash::make($request->password),
+                'role' => 'customer',
+            ]);
+
+            Customer::create([
+                'user' => $user->id,
+                'nama' => $request->nama,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'alamat' => $request->alamat,
+                'email' => $request->email,
+                'no_telp' => $request->telepon,
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('login')->with('toast', [
+                'type' => 'success',
+                'message' => 'Registrasi berhasil! Silakan login.',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()->withInput()->with('toast', [
+                'type' => 'error',
+                'message' => 'Terjadi kesalahan, silakan coba lagi.',
+            ])->withInput();
+        }
     }
 
     /**

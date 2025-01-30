@@ -3,7 +3,7 @@
         <input id="aside-dashboard" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content flex flex-col">
             @include('components.dashboard.navbar')
-            <div class="p-4 md:p-5 bg-stone-100 w-full overflow-y-scroll">
+            <div class="p-4 md:p-5 bg-stone-100 w-full">
                 <div class="flex flex-col gap-5 md:gap-6 w-full min-h-screen">
                     {{ $slot }}
                 </div>

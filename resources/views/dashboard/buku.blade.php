@@ -99,7 +99,7 @@
                                             <input type="checkbox" id="lihat_modal_{{ $item->id }}"
                                                 class="modal-toggle" />
                                             <div class="modal" role="dialog">
-                                                <div class="modal-box max-w-5xl bg-neutral text-white rounded-lg shadow-lg transition-all duration-300 ease-in-out"
+                                                <div class="modal-box max-w-5xl rounded-lg shadow-lg transition-all duration-300 ease-in-out"
                                                     id="modal_box_{{ $item->id }}">
                                                     <div
                                                         class="modal-header flex justify-between items-center p-4 border-b border-gray-600">
@@ -108,46 +108,16 @@
                                                             class="btn btn-sm btn-circle btn-ghost hover:bg-gray-600 transition-all duration-200 ease-in-out">&times;</label>
                                                     </div>
                                                     <div class="modal-body p-6">
-                                                        @php
-                                                            $fileExtension = pathinfo(
-                                                                $item->gambar,
-                                                                PATHINFO_EXTENSION,
-                                                            );
-                                                            $imagePath = $item->gambar
-                                                                ? asset('storage/' . $item->gambar)
-                                                                : 'https://www.seoptimer.com/storage/images/2019/05/2744-404-redirection-1.png';
-                                                        @endphp
-
-                                                        <!-- Menampilkan Gambar -->
-                                                        @if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']))
-                                                            <img src="{{ $imagePath }}" alt="Image"
-                                                                class="w-full h-auto rounded-lg shadow-md mb-6"
-                                                                loading="lazy"
-                                                                onerror="this.onerror=null; this.src='https://www.seoptimer.com/storage/images/2019/05/2744-404-redirection-1.png'">
-                                                        @endif
-
-                                                        <!-- Menampilkan PDF -->
-                                                        @if ($fileExtension == 'pdf')
-                                                            <a href="{{ asset('storage/' . $item->gambar) }}"
-                                                                target="_blank"
-                                                                class="text-blue-500 hover:underline">Lihat PDF</a>
-                                                        @endif
-
-                                                        <!-- Menampilkan Video -->
-                                                        @if (in_array($fileExtension, ['mp4', 'webm', 'ogg']))
-                                                            <video controls
-                                                                class="w-full max-w-2xl mx-auto rounded-lg shadow-md mb-6">
-                                                                <source src="{{ asset('storage/' . $item->gambar) }}"
-                                                                    type="video/{{ $fileExtension }}">
-                                                                Your browser does not support the video tag.
-                                                            </video>
-                                                        @endif
-
-                                                        <h2 class="text-lg font-semibold text-gray-200">Deskripsi</h2>
-                                                        <div id="deskripsi_{{ $item->id }}"
-                                                            class="mt-4 quill-content text-sm text-gray-300">
-                                                            {!! $item->deskripsi !!}
-                                                        </div>
+                                                        <img src="{{ str_contains($item->gambar, 'https://') ? $item->gambar : asset('storage/' . $item->gambar) }}"
+                                                            alt="Image"
+                                                            class="w-full h-auto rounded-lg shadow-md mb-6"
+                                                            loading="lazy"
+                                                            onerror="this.onerror=null; this.src=asset($item->gambar)">
+                                                    </div>
+                                                    <h2 class="text-lg font-semibold">Deskripsi</h2>
+                                                    <div id="deskripsi_{{ $item->id }}"
+                                                        class="mt-4 quill-content text-sm">
+                                                        {!! $item->deskripsi !!}
                                                     </div>
                                                 </div>
                                             </div>

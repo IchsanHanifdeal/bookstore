@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\buku;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -11,24 +12,33 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $products = [
-            ['id_buku' => 1, 'judul_buku' => 'Judul Buku 1', 'gambar' => 'https://placehold.co/600x400', 'harga' => 50000, 'stok' => 10, 'nama_pengarang' => 'Pengarang 1'],
-            ['id_buku' => 2, 'judul_buku' => 'Judul Buku 2', 'gambar' => 'https://placehold.co/600x400', 'harga' => 60000, 'stok' => 5, 'nama_pengarang' => 'Pengarang 2'],
-            ['id_buku' => 3, 'judul_buku' => 'Judul Buku 3', 'gambar' => 'https://placehold.co/600x400', 'harga' => 70000, 'stok' => 0, 'nama_pengarang' => 'Pengarang 3'],
-        ];
-    
         return view('home.index', [
-            'products' => $products,
+            'buku' => buku::all(),
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function detail($judul_buku)
     {
-        //
+        $buku = Buku::where('judul_buku', $judul_buku)->first();
+
+        if (!$buku) {
+            return redirect()->route('home')->with('error', 'Book not found');
+        }
+
+        $relatedBooks = Buku::where('kategori', $buku->kategori)
+            ->where('id', '!=', $buku->id)
+            ->take(4)
+            ->get();
+
+        return view('home.detail', [
+            'buku' => $buku,
+            'relatedBooks' => $relatedBooks
+        ]);
     }
+
 
     /**
      * Store a newly created resource in storage.

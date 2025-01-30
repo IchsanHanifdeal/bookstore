@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\KategoriController;
@@ -23,9 +24,22 @@ use App\Http\Controllers\TransaksiController;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('index');
+
+Route::get('/keranjang', [CartController::class, 'index'])->name('keranjang');
+
+Route::get('/detail/{judul_buku}', [HomeController::class, 'detail'])->name('detail_buku');
+
+Route::get('/get-customer-id', [CartController::class, 'getCustomerId']);
+Route::post('/add-to-cart/{judul_buku}/{id}', [CartController::class, 'addCart']);
+Route::post('/update-keranjang/{id}/{action}', [CartController::class, 'updateCart'])->name('update-keranjang');
+Route::delete('/hapus-item-keranjang/{id}', [CartController::class, 'hapusItem'])->name('hapus-item-keranjang');
+
+Route::post('/submit-pembayaran', [TransaksiController::class, 'store'])->name('submit-pembayaran');
+
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login/auth', [AuthController::class, 'auth'])->name('authenticate');
 Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/register/post', [AuthController::class, 'store'])->name('auth.register');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

@@ -1,12 +1,13 @@
 <div class="drawer-side border-r z-20">
     <label for="aside-dashboard" aria-label="close sidebar" class="drawer-overlay"></label>
-    <ul class="menu p-4 w-64 lg:w-72 min-h-full bg-white [&>li>a]:gap-4 [&>li]:my-1.5 [&>li]:text-[14.3px] [&>li]:font-medium [&>li]:text-opacity-80 [&>li]:text-base [&>_*_svg]:stroke-[1.5] [&>_*_svg]:size-[23px] [&>.label]:mt-6">
-        
+    <ul
+        class="menu p-4 w-64 lg:w-72 min-h-full bg-white [&>li>a]:gap-4 [&>li]:my-1.5 [&>li]:text-[14.3px] [&>li]:font-medium [&>li]:text-opacity-80 [&>li]:text-base [&>_*_svg]:stroke-[1.5] [&>_*_svg]:size-[23px] [&>.label]:mt-6">
+
         <!-- Brand Section -->
         <div class="pb-4 border-b border-gray-300">
             @include('components.brands', ['class' => '!text-xl'])
         </div>
-        
+
         <!-- General Section -->
         <span class="label text-xs font-extrabold opacity-50">GENERAL</span>
         <li>
@@ -57,13 +58,30 @@
         <!-- Logout Section -->
         <span class="label text-xs font-extrabold opacity-50 mt-4">ADVANCE</span>
         <li>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="px-0">
-                @csrf
-                <a class="flex items-center px-2.5 gap-4" href="#" onclick="event.preventDefault(); confirmLogout();">
-                    <x-lucide-log-out />
-                    Logout
-                </a>
-            </form>
+            <a class="flex items-center px-2.5 gap-4 cursor-pointer"
+                onclick="document.getElementById('logout_modal').showModal();">
+                <x-lucide-log-out />
+                Logout
+            </a>
         </li>
     </ul>
 </div>
+
+<dialog id="logout_modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box rounded-xl shadow-lg">
+        <h3 class="text-xl font-bold text-gray-800">Konfirmasi Logout</h3>
+        <p class="mt-2 text-gray-600">Apakah Anda yakin ingin keluar?</p>
+        <div class="modal-action mt-4">
+            <button type="button" onclick="document.getElementById('logout_modal').close()"
+                class="btn bg-gray-200 text-gray-700 hover:bg-gray-300 border-0">
+                Batal
+            </button>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-primary bg-red-600 hover:bg-red-700 text-white border-0" onclick="closeAllModals(event)">
+                    Logout
+                </button>
+            </form>
+        </div>
+    </div>
+</dialog>
