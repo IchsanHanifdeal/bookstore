@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\buku;
+use App\Models\customer;
 use Illuminate\Http\Request;
+use App\Models\transaksi;
 
 class DashboardController extends Controller
 {
@@ -11,7 +14,42 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('dashboard.index');
+        $data_per_bulan = Transaksi::selectRaw('MONTH(tanggal) as bulan, SUM(total) as total')
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->pluck('total', 'bulan');
+
+        $bulan_nama = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        ];
+
+        $bulan_labels = array_map(fn($bulan) => $bulan_nama[$bulan], array_keys($data_per_bulan->toArray()));
+
+        $transaksi_terbaru = Transaksi::with(['customers', 'bukus']) 
+            ->latest('tanggal')
+            ->take(10)
+            ->get();
+
+        return view('dashboard.index', [
+            'jumlah_buku' => Buku::count(),
+            'jumlah_customer' => Customer::count(),
+            'jumlah_transaksi' => Transaksi::count(),
+            'jumlah_pendapatan' => Transaksi::sum('total'),
+            'data_transaksi' => json_encode(array_values($data_per_bulan->toArray())),
+            'bulan_labels' => json_encode($bulan_labels),
+            'transaksi_terbaru' => $transaksi_terbaru
+        ]);
     }
 
     /**

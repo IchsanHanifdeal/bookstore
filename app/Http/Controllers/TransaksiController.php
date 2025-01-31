@@ -15,17 +15,77 @@ class TransaksiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('dashboard.transaksi');
+        $selectedDay = $request->input('hari');
+        $selectedMonth = $request->input('bulan');
+        $selectedYear = $request->input('tahun');
+
+        $hariIndonesia = [
+            'Senin' => 1,
+            'Selasa' => 2,
+            'Rabu' => 3,
+            'Kamis' => 4,
+            'Jumat' => 5,
+            'Sabtu' => 6,
+            'Minggu' => 7
+        ];
+
+        $query = Transaksi::query();
+
+        if ($selectedDay && isset($hariIndonesia[$selectedDay])) {
+            $query->whereRaw('DAYOFWEEK(tanggal) = ?', [$hariIndonesia[$selectedDay]]);
+        }
+
+        if ($selectedMonth) {
+            $query->whereMonth('tanggal', $selectedMonth);
+        }
+
+        if ($selectedYear) {
+            $query->whereYear('tanggal', $selectedYear);
+        }
+
+        $transaksi = $query->get();
+
+        $jumlah_transaksi_tahun_ini = Transaksi::whereYear('tanggal', now()->year)->sum('total');
+        $jumlah_transaksi_bulan_ini = Transaksi::whereYear('tanggal', now()->year)
+            ->whereMonth('tanggal', now()->month)
+            ->sum('total');
+        $jumlah_transaksi_hari_ini = Transaksi::whereDate('tanggal', now()->format('Y-m-d'))->sum('total');
+
+        $jumlah_transaksi = Transaksi::count();
+        $jumlah_menunggu_persetujuan = Transaksi::where('validasi', 'menunggu_validasi')->count();
+        $jumlah_transaksi_dikonfirmasi = Transaksi::where('validasi', 'diterima')->count();
+        $jumlah_transaksi_ditolak = Transaksi::where('validasi', 'ditolak')->count();
+
+        return view('dashboard.transaksi', [
+            'jumlah_transaksi' => $jumlah_transaksi,
+            'jumlah_menunggu_persetujuan' => $jumlah_menunggu_persetujuan,
+            'jumlah_transaksi_dikonfirmasi' => $jumlah_transaksi_dikonfirmasi,
+            'jumlah_transaksi_ditolak' => $jumlah_transaksi_ditolak,
+            'jumlah_transaksi_tahun_ini' => $jumlah_transaksi_tahun_ini,
+            'jumlah_transaksi_bulan_ini' => $jumlah_transaksi_bulan_ini,
+            'jumlah_transaksi_hari_ini' => $jumlah_transaksi_hari_ini,
+            'transaksi' => $transaksi,
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function history_transaksi()
     {
-        //
+        $user = Auth::user();
+        $customer = Customer::where('user', $user->id)->first();
+
+        if (!$customer) {
+            return redirect()->route('home')->with('error', 'Customer tidak ditemukan');
+        }
+
+        $transaksi = Transaksi::where('customer', $customer->id)->with('bukus')->orderBy('tanggal', 'desc')->get();
+
+        return view('home.history', compact('transaksi'));
     }
 
     /**
@@ -97,16 +157,45 @@ class TransaksiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, transaksi $transaksi)
+    public function terima(Request $request, $id)
     {
-        //
-    }
+        $transaksi = Transaksi::findOrFail($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(transaksi $transaksi)
+        $buku = $transaksi->bukus;
+
+        // Memeriksa apakah stok buku cukup
+        if ($buku->stok < $transaksi->jumlah) {
+            return back()->with('toast', [
+                'type' => 'error',
+                'message' => 'Stok buku tidak cukup.'
+            ]);
+        }
+
+        // Mengurangi stok buku
+        $buku->stok -= $transaksi->jumlah;
+        $buku->save();
+
+        // Update status transaksi menjadi diterima
+        $transaksi->validasi = 'diterima';
+        $transaksi->save();
+
+        return back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Transaksi diterima dan stok buku telah diperbarui.'
+        ]);
+    }
+    public function tolak(Request $request, $id)
     {
-        //
+        $peminjaman = Transaksi::findOrFail($id);
+
+        // Update status transaksi menjadi ditolak
+        $peminjaman->update([
+            'validasi' => 'ditolak',
+        ]);
+
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Peminjaman ditolak.'
+        ]);
     }
 }

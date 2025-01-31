@@ -37,6 +37,12 @@
                         Keranjang ({{ $jumlah_cart }})
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('history') }}" 
+                        class="font-medium {{ Request::routeIs('history') ? 'text-blue-600 font-bold' : '' }}">
+                        History
+                    </a>
+                </li>
             </ul>
             <button type="submit" class="btn btn-sm btn-outline"
                 onclick="document.getElementById('logout_modal').showModal();">Logout</button>

@@ -35,6 +35,7 @@ Route::post('/update-keranjang/{id}/{action}', [CartController::class, 'updateCa
 Route::delete('/hapus-item-keranjang/{id}', [CartController::class, 'hapusItem'])->name('hapus-item-keranjang');
 
 Route::post('/submit-pembayaran', [TransaksiController::class, 'store'])->name('submit-pembayaran');
+Route::get('/history', [TransaksiController::class, 'history_transaksi'])->name('history');
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login/auth', [AuthController::class, 'auth'])->name('authenticate');
@@ -70,6 +71,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/dashboard/pengarang/{id}/hapus', [PengarangController::class, 'destroy'])->name('destroy.pengarang');
 
     Route::get('/dashboard/transaksi', [TransaksiController::class, 'index'])->name('transaksi');
+    Route::put('/dashboard/transaksi/{id}/terima', [TransaksiController::class, 'terima'])->name('terima.transaksi');
+    Route::put('/dashboard/transaksi/{id}/tolak', [TransaksiController::class, 'tolak'])->name('tolak.transaksi');
     Route::post('/dashboard/transaksi/post', [TransaksiController::class, 'store'])->name('store.transaksi');
     Route::put('/dashboard/transaksi/{id}/update', [TransaksiController::class, 'update'])->name('update.transaksi');
     Route::delete('/dashboard/transaksi/{id}/hapus', [TransaksiController::class, 'destroy'])->name('destroy.transaksi');

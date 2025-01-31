@@ -13,7 +13,7 @@ class transaksi extends Model
 
     public function customers()
     {
-        return $this->belongsTo(Customer::class, 'user');
+        return $this->belongsTo(Customer::class, 'customer');
     }
 
     public function bukus()
