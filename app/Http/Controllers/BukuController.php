@@ -14,14 +14,33 @@ class BukuController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $q = trim((string) $request->input('kategori', ''));
+
+        $buku = Buku::with(['pengarangs', 'penerbits', 'kategoris'])
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function ($sub) use ($q) {
+                    $sub->where('judul_buku', 'like', "%{$q}%")
+                        ->orWhere('deskripsi', 'like', "%{$q}%")
+                        ->orWhere('stok', 'like', "%{$q}%")
+                        ->orWhere('harga', 'like', "%{$q}%");
+                })
+                    ->orWhereHas('pengarangs', fn($r) => $r->where('nama', 'like', "%{$q}%"))
+                    ->orWhereHas('penerbits', fn($r) => $r->where('nama', 'like', "%{$q}%"))
+                    ->orWhereHas('kategoris', fn($r) => $r->where('nama_kategori', 'like', "%{$q}%"));
+            })
+            ->orderBy('stok', 'asc')
+            ->get();
+
         return view('dashboard.buku', [
-            'buku' => Buku::orderBy('stok', 'asc')->get(),
+            'buku'         => $buku,
             'buku_terbaru' => Buku::orderBy('created_at', 'desc')->first(),
-            'pengarang' => Pengarang::all(),
-            'penerbit' => penerbit::all(),
-            'kategori' => kategori::all(),
+            'pengarang'    => Pengarang::all(),
+            'penerbit'     => Penerbit::all(),
+            'kategori'     => Kategori::all(),
+            'search'       => $q,
+            'total_buku'   => Buku::all()->count(),
         ]);
     }
 

@@ -12,7 +12,7 @@
                         {{ str_replace('_', ' ', $type) }}
                     </p>
                     <p class="text-lg font-semibold text-gray-700 line-clamp-1 capitalize">
-                        {{ $type == 'total_buku_terdaftar' ? $buku->count() ?? '-' : '' }}
+                        {{ $type == 'total_buku_terdaftar' ? $total_buku ?? '-' : '' }}
                         {{ $type == 'buku_terbaru' ? $buku_terbaru->judul_buku ?? 'Belum ada buku Terbaru' : '' }}
                     </p>
                 </div>
@@ -50,8 +50,15 @@
                     </p>
                 </div>
                 <div class="w-full px-5 sm:px-7 bg-zinc-50">
-                    <input type="text" placeholder="Cari data disini...." name="kategori" id="searchInput"
-                        class="input input-sm shadow-md w-full bg-zinc-100">
+                    <form action="{{ route('buku') }}" method="GET" class="flex gap-2 w-full px-5 sm:px-7 bg-zinc-50">
+                        <input type="text" name="kategori" placeholder="Cari data disini...."
+                            value="{{ old('kategori', request('kategori')) }}"
+                            class="input input-sm shadow-md w-full bg-zinc-100">
+
+                        <button type="submit" class="btn btn-sm btn-primary shadow-md">
+                            Cari
+                        </button>
+                    </form>
                 </div>
                 <div class="flex flex-col bg-zinc-50 rounded-b-xl gap-3 divide-y pt-0 p-5 sm:p-7">
                     <div class="overflow-x-auto">
